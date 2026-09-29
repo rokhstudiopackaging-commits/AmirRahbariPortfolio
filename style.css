@@ -1,0 +1,1177 @@
+/* ============================================================
+   AMIR RAHBARI — Portfolio
+   پالت اصلی (دست‌نخورده):
+     paper  #F0EFEA   ink  #141413   accent  #DA644B
+   نسخه: 2026
+   ============================================================ */
+
+
+/* ============================================================
+   ۱) متغیرها — تم روشن و تم تاریک
+   ============================================================ */
+:root {
+  --paper: #F0EFEA;
+  --ink:   #141413;
+  --accent:#DA644B;
+  --line:  rgba(20,20,19,.14);
+  --muted: rgba(20,20,19,.62);
+
+  --surface:     #E6E4DD;           /* پس‌زمینه tile و کارت‌ها */
+  --tool-bg:     #ffffff;           /* پس‌زمینه چیپ ابزارها */
+  --halo:        rgba(20,20,19,.28);/* ذرات پس‌زمینه */
+  --grain:       rgba(20,20,19,.018);
+  --grain-2:     rgba(20,20,19,.014);
+  --nav-bg:      rgba(240,239,234,.78);
+  --lb-bg:       rgba(20,20,19,.92);
+  --shadow-soft: rgba(20,20,19,.22);
+  --shadow-hov:  rgba(20,20,19,.3);
+  --thumb:       rgba(20,20,19,.18);
+
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  --paper: #141413;
+  --ink:   #F0EFEA;
+  --accent:#DA644B;                 /* دست‌نخورده */
+  --line:  rgba(240,239,234,.16);
+  --muted: rgba(240,239,234,.66);
+
+  --surface:     #1F1E1C;
+  --tool-bg:     #1F1E1C;
+  --halo:        rgba(240,239,234,.32);
+  --grain:       rgba(240,239,234,.02);
+  --grain-2:     rgba(240,239,234,.014);
+  --nav-bg:      rgba(20,20,19,.72);
+  --lb-bg:       rgba(10,10,9,.94);
+  --shadow-soft: rgba(0,0,0,.5);
+  --shadow-hov:  rgba(0,0,0,.6);
+  --thumb:       rgba(240,239,234,.22);
+
+  color-scheme: dark;
+}
+
+
+/* ============================================================
+   ۲) پایه
+   ============================================================ */
+html {
+  scroll-behavior: smooth;
+  box-sizing: border-box;
+  scrollbar-color: var(--thumb) transparent;
+  scrollbar-width: thin;
+}
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Vazirmatn', 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  position: relative;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* بافت کاغذ بسیار ظریف */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: .5;
+  mix-blend-mode: multiply;
+  background-image:
+    radial-gradient(circle at 20% 30%, var(--grain)   0 1px, transparent 1.2px),
+    radial-gradient(circle at 70% 60%, var(--grain-2) 0 1px, transparent 1.2px);
+  background-size: 5px 5px, 7px 7px;
+}
+
+main, header, footer { position: relative; z-index: 2; }
+
+::selection { background: var(--accent); color: #fff; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--thumb);
+  border-radius: 8px;
+  transition: background .3s;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* انتقال نرم رنگ‌ها هنگام تعویض تم */
+html, body,
+header.nav, .tile, .tool, .skill, .site-footer,
+footer, section, figure {
+  transition:
+    background-color .45s cubic-bezier(.19,1,.22,1),
+    color .45s cubic-bezier(.19,1,.22,1),
+    border-color .45s cubic-bezier(.19,1,.22,1),
+    box-shadow .45s cubic-bezier(.19,1,.22,1);
+}
+
+/* انگلیسی */
+.en {
+  font-family: 'Inter', 'Vazirmatn', sans-serif;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+
+/* ============================================================
+   ۳) تایپوگرافی
+   ============================================================ */
+h1, h2 { letter-spacing: -.02em; }
+
+.mask { display: block; overflow: hidden; }
+.mask > span {
+  display: block;
+  transform: translateY(105%);
+  animation: up 1.1s cubic-bezier(.19,1,.22,1) forwards;
+  animation-delay: var(--d, 0s);
+}
+@keyframes up { to { transform: none; } }
+
+.rise {
+  opacity: 0;
+  transform: translateY(26px);
+  animation: rise .9s cubic-bezier(.19,1,.22,1) forwards;
+  animation-delay: var(--d, 0s);
+}
+@keyframes rise { to { opacity: 1; transform: none; } }
+
+
+/* ============================================================
+   ۴) هدر چسبنده + نوار پیشرفت
+   ============================================================ */
+header.nav {
+  position: fixed;
+  top: 0; inset-inline: 0;
+  z-index: 40;
+  padding-top: var(--pad);
+  transition:
+    background .5s cubic-bezier(.19,1,.22,1),
+    box-shadow .5s cubic-bezier(.19,1,.22,1);
+}
+header.nav.solid {
+  background: var(--nav-bg);
+  backdrop-filter: blur(18px) saturate(1.6);
+  -webkit-backdrop-filter: blur(18px) saturate(1.6);
+  box-shadow: 0 1px 0 var(--line);
+}
+
+header.nav a.l {
+  position: relative;
+  padding: .35rem 0;
+  transition: color .35s;
+}
+header.nav a.l::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0; bottom: -2px;
+  height: 1.5px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform .4s cubic-bezier(.19,1,.22,1);
+}
+header.nav a.l:hover::after,
+header.nav a.l.active::after { transform: scaleX(1); }
+header.nav a.l.active { color: var(--accent); }
+
+/* نوار پیشرفت اسکرول */
+.progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0;
+  background: var(--accent);
+  z-index: 50;
+  transition: width .08s linear;
+}
+
+
+/* ============================================================
+   ۵) دکمه تغییر تم
+   ============================================================ */
+.theme-toggle {
+  position: relative;
+  width: 40px; height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    border-color .35s cubic-bezier(.19,1,.22,1),
+    color .35s,
+    transform .45s cubic-bezier(.19,1,.22,1);
+}
+.theme-toggle:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  transform: rotate(-12deg);
+}
+.theme-toggle svg {
+  width: 18px; height: 18px;
+  display: block;
+  transition: transform .6s cubic-bezier(.19,1,.22,1);
+}
+.theme-toggle .ico-sun  { display: none; }
+.theme-toggle .ico-moon { display: block; }
+html[data-theme="dark"] .theme-toggle .ico-sun  { display: block; }
+html[data-theme="dark"] .theme-toggle .ico-moon { display: none; }
+.theme-toggle.spin svg { transform: rotate(180deg) scale(.7); }
+
+
+/* ============================================================
+   ۶) نوارهای عمودی چسبنده
+   ============================================================ */
+.rail {
+  position: fixed;
+  top: 0; bottom: 0;
+  width: 46px;
+  z-index: 35;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity .6s cubic-bezier(.2,.7,.2,1);
+}
+.rail.show { opacity: 1; }
+.rail__line {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 1px;
+  background: var(--line);
+}
+.rail--l { left: 0; }
+.rail--l .rail__line { left: 46px; }
+.rail--r { right: 0; }
+.rail--r .rail__line { right: 46px; }
+
+.rail__text {
+  writing-mode: vertical-rl;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.rail--r .rail__text { transform: rotate(180deg); }
+
+.rail__dot {
+  position: absolute;
+  bottom: 28px;
+  width: 7px; height: 7px;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: rotate(45deg);
+}
+.rail--l .rail__dot { left: 20px; }
+.rail--r .rail__dot { right: 20px; }
+
+@media (max-width: 900px) { .rail { display: none; } }
+
+
+/* ============================================================
+   ۷) ظاهر شدن هنگام اسکرول + خط جداکننده متحرک
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  filter: blur(6px);
+  transition:
+    opacity 1s   cubic-bezier(.19,1,.22,1),
+    transform 1s cubic-bezier(.19,1,.22,1),
+    filter 1s    cubic-bezier(.19,1,.22,1);
+  transition-delay: var(--d, 0s);
+  will-change: opacity, transform, filter;
+}
+.reveal.in { opacity: 1; transform: none; filter: none; }
+
+.rule {
+  height: 1px;
+  background: var(--line);
+  position: relative;
+  overflow: hidden;
+}
+.rule::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 38%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform .8s cubic-bezier(.19,1,.22,1);
+}
+figure:hover .rule::after,
+.reveal.in .rule::after { transform: scaleX(1); }
+
+/* نقطه تزئینی */
+.dot {
+  width: .85rem; height: .85rem;
+  background: var(--accent);
+  border-radius: 3px;
+  transform: rotate(45deg);
+  display: inline-block;
+  transition: transform .5s cubic-bezier(.19,1,.22,1);
+}
+.dot:hover, .rise:hover .dot { transform: rotate(135deg) scale(1.1); }
+
+
+/* ============================================================
+   ۸) تصاویر و کاشی‌ها
+   ============================================================ */
+.tile {
+  border-radius: 28px;
+  overflow: hidden;
+  background: var(--surface);
+  cursor: zoom-in;
+  position: relative;
+  box-shadow:
+    0 1px 0 rgba(20,20,19,.04),
+    0 18px 40px -28px var(--shadow-soft);
+  transition: box-shadow .6s cubic-bezier(.19,1,.22,1);
+}
+.tile:hover {
+  box-shadow:
+    0 1px 0 rgba(20,20,19,.06),
+    0 26px 56px -30px var(--shadow-hov);
+}
+.tile img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  transition: transform 1.2s cubic-bezier(.19,1,.22,1);
+  will-change: transform;
+}
+.tile:hover img { transform: scale(1.06); }
+
+/* درخشش هنگام هاور */
+.tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255,255,255,.16) 46%,
+    transparent 62%
+  );
+  transform: translateX(-120%);
+  transition: transform 1.1s cubic-bezier(.19,1,.22,1);
+  z-index: 3;
+}
+.tile:hover::after { transform: translateX(120%); }
+
+/* در تم تاریک، درخشش ملایم‌تر */
+html[data-theme="dark"] .tile::after {
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(240,239,234,.08) 46%,
+    transparent 62%
+  );
+}
+
+/* در تم تاریک، تصاویر کمی کدر */
+html[data-theme="dark"] .tile img {
+  filter: brightness(.92) contrast(1.04) saturate(.96);
+  transition:
+    filter .5s cubic-bezier(.19,1,.22,1),
+    transform 1.2s cubic-bezier(.19,1,.22,1);
+}
+html[data-theme="dark"] .tile:hover img {
+  filter: brightness(1) contrast(1) saturate(1);
+}
+
+.cap b { color: var(--accent); font-weight: 800; }
+
+
+/* ============================================================
+   ۹) مهارت‌ها
+   ============================================================ */
+.skill {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  padding: 1.05rem 0;
+  border-bottom: 1px solid var(--line);
+  transition: padding .5s cubic-bezier(.19,1,.22,1), color .35s;
+  position: relative;
+}
+.skill i {
+  width: .55rem; height: .55rem;
+  border-radius: 2px;
+  background: #B9B8B6;
+  transition: background .35s, transform .5s cubic-bezier(.19,1,.22,1);
+  flex-shrink: 0;
+}
+.skill:hover { padding-inline-start: 1rem; }
+.skill:hover i {
+  background: var(--accent);
+  transform: rotate(45deg) scale(1.35);
+}
+.skill::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: 0;
+  bottom: -1px;
+  height: 1px;
+  width: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform .5s cubic-bezier(.19,1,.22,1);
+}
+.skill:hover::after { transform: scaleX(1); }
+
+
+/* ============================================================
+   ۱۰) ابزارها
+   ============================================================ */
+.tool {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  padding: .85rem 1.2rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--tool-bg);
+  transition:
+    transform .5s cubic-bezier(.19,1,.22,1),
+    border-color .35s,
+    box-shadow .5s cubic-bezier(.19,1,.22,1);
+  cursor: default;
+}
+.tool:hover {
+  transform: translateY(-5px);
+  border-color: var(--c);
+  box-shadow: 0 10px 22px -16px var(--c);
+}
+.tool i {
+  width: .75rem; height: .75rem;
+  border-radius: 3px;
+  background: var(--c);
+  transition: transform .5s cubic-bezier(.19,1,.22,1);
+}
+.tool:hover i { transform: rotate(45deg) scale(1.15); }
+
+
+/* ============================================================
+   ۱۱) سواچ‌های رنگ
+   ============================================================ */
+.sw {
+  flex: 1;
+  min-height: 92px;
+  border-radius: 20px;
+  display: flex;
+  align-items: flex-end;
+  padding: .8rem;
+  font-size: .72rem;
+  transition: flex .7s cubic-bezier(.19,1,.22,1);
+  cursor: default;
+}
+.sw:hover { flex: 2.6; }
+
+
+/* ============================================================
+   ۱۲) نوار واژه‌های متحرک
+   ============================================================ */
+.marquee {
+  display: flex;
+  width: max-content;
+  animation: mq 42s linear infinite;
+}
+.marquee:hover { animation-play-state: paused; }
+@keyframes mq { to { transform: translateX(50%); } }
+
+
+/* ============================================================
+   ۱۳) دکمه‌ها و لینک‌ها
+   ============================================================ */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .95rem 1.7rem;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  overflow: hidden;
+  transition: transform .45s cubic-bezier(.19,1,.22,1);
+  z-index: 0;
+}
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: translateY(101%);
+  transition: transform .5s cubic-bezier(.19,1,.22,1);
+  z-index: -1;
+}
+.btn:hover { transform: translateY(-3px); }
+.btn:hover::before { transform: translateY(0); }
+
+.link-underline {
+  position: relative;
+  padding: .75rem .25rem;
+  transition: color .35s;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0; bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(1);
+  transform-origin: right;
+  transition: transform .45s cubic-bezier(.19,1,.22,1);
+}
+.link-underline:hover { color: var(--accent); }
+.link-underline:hover::after {
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+
+/* ============================================================
+   ۱۴) نورافکن (Lightbox)
+   ============================================================ */
+#lb {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: var(--lb-bg);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .4s cubic-bezier(.19,1,.22,1);
+}
+#lb.on { opacity: 1; pointer-events: auto; }
+#lb img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 22px;
+  transform: scale(.94);
+  transition: transform .55s cubic-bezier(.19,1,.22,1);
+  box-shadow: 0 40px 80px -40px rgba(0,0,0,.6);
+}
+#lb.on img { transform: scale(1); }
+
+
+/* ============================================================
+   ۱۵) بوم ذرات پس‌زمینه
+   ============================================================ */
+.particles {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .55;
+}
+
+
+/* ============================================================
+   ۱۶) فوتر
+   ============================================================ */
+.site-footer {
+  position: relative;
+  margin-top: 2rem;
+  border-top: 1px solid var(--line);
+  background: var(--paper);
+  overflow: hidden;
+}
+.site-footer__inner {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: clamp(3rem, 6vw, 5.5rem) clamp(1.25rem, 4vw, 2rem) 0;
+}
+
+/* ردیف بالا */
+.footer-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+.footer-status {
+  display: inline-flex;
+  align-items: center;
+  gap: .65rem;
+  font-size: .9rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.status-dot {
+  position: relative;
+  width: .5rem; height: .5rem;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: rotate(45deg);
+}
+.status-dot::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 4px;
+  border: 1px solid var(--accent);
+  opacity: .35;
+  animation: pulse 2.6s cubic-bezier(.19,1,.22,1) infinite;
+}
+@keyframes pulse {
+  0%   { transform: scale(.85); opacity: .5; }
+  70%  { transform: scale(1.4);  opacity: 0; }
+  100% { transform: scale(1.4);  opacity: 0; }
+}
+
+.footer-mail {
+  font-weight: 600;
+  font-size: .95rem;
+  color: var(--ink);
+  position: relative;
+  transition: color .35s;
+}
+.footer-mail::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0; bottom: -3px;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform .5s cubic-bezier(.19,1,.22,1);
+}
+.footer-mail:hover { color: var(--accent); }
+.footer-mail:hover::after { transform: scaleX(1); }
+
+/* خط جداکننده */
+.footer-rule {
+  position: relative;
+  height: 1px;
+  background: var(--line);
+  margin-bottom: clamp(2rem, 5vw, 3rem);
+}
+.footer-rule::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 22%;
+  background: var(--accent);
+}
+
+/* سه ستون وسط */
+.footer-mid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.5rem, 4vw, 3rem);
+  margin-bottom: clamp(3rem, 6vw, 5rem);
+}
+@media (max-width: 720px) {
+  .footer-mid { grid-template-columns: 1fr; }
+}
+
+.footer-label {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.1rem;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0; margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .65rem;
+}
+.footer-links a {
+  position: relative;
+  display: inline-block;
+  color: var(--ink);
+  font-size: .95rem;
+  transition: color .35s, transform .45s cubic-bezier(.19,1,.22,1);
+}
+.footer-links a::before {
+  content: "";
+  position: absolute;
+  inset-inline-end: 100%;
+  top: 50%;
+  width: 0;
+  height: 1px;
+  background: var(--accent);
+  transform: translateY(-50%);
+  transition:
+    width .35s cubic-bezier(.19,1,.22,1),
+    margin-inline-end .35s;
+}
+.footer-links a:hover { color: var(--accent); }
+.footer-links a:hover::before {
+  width: 14px;
+  margin-inline-end: 8px;
+}
+
+.footer-meta {
+  list-style: none;
+  padding: 0; margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .55rem;
+}
+.footer-meta li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: .9rem;
+  padding-block: .35rem;
+  border-bottom: 1px dashed var(--line);
+}
+.footer-meta li span:first-child { color: var(--muted); }
+.footer-meta li span:last-child  { font-weight: 600; }
+
+/* امضای غول‌پیکر */
+.footer-signature {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  user-select: none;
+  margin-top: -.4rem;
+  margin-bottom: -.4rem;
+  font-size: clamp(3.5rem, 17vw, 15rem);
+  line-height: .85;
+  font-weight: 800;
+  letter-spacing: -.045em;
+}
+.footer-signature span {
+  display: block;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--line);
+  transition:
+    -webkit-text-stroke .6s cubic-bezier(.19,1,.22,1),
+    color .6s cubic-bezier(.19,1,.22,1);
+}
+.site-footer:hover .footer-signature span {
+  -webkit-text-stroke: 1px var(--accent);
+}
+
+/* کپی‌رایت */
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: .75rem 1rem;
+  padding-block: 1.4rem;
+  margin-top: clamp(1.5rem, 3vw, 2rem);
+  border-top: 1px solid var(--line);
+  font-size: .82rem;
+  color: var(--muted);
+}
+.footer-top-link {
+  position: relative;
+  color: var(--muted);
+  transition: color .35s;
+}
+.footer-top-link::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0; bottom: -2px;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform .45s cubic-bezier(.19,1,.22,1);
+}
+.footer-top-link:hover { color: var(--accent); }
+.footer-top-link:hover::after { transform: scaleX(1); }
+
+
+/* ============================================================
+   ۱۷) View Transition — موج دایره‌ای از دکمه تم
+   ============================================================ */
+@view-transition { navigation: none; }
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) { z-index: 1; }
+::view-transition-new(root) {
+  z-index: 2;
+  animation: circle-reveal .65s cubic-bezier(.19,1,.22,1);
+}
+@keyframes circle-reveal {
+  from { clip-path: circle(0%   at var(--tx, 50%) var(--ty, 50%)); }
+  to   { clip-path: circle(150% at var(--tx, 50%) var(--ty, 50%)); }
+}
+
+
+/* ============================================================
+   ۱۸) اسکلتون و بارگذارنده
+   ============================================================ */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-load 1.5s infinite;
+  border-radius: 4px;
+}
+@keyframes skeleton-load {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+
+/* ============================================================
+   ۱۹) کاهش حرکت — احترام به تنظیمات کاربر
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  html { scroll-behavior: auto; }
+  .rise, .mask > span, .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+  .particles { display: none; }
+  ::view-transition-new(root) { animation: none; }
+  .status-dot::after { animation: none; opacity: 0; }
+}
+/* ============================================================
+   ۲۰) هدر موبایل — دکمه همبرگری و منوی تمام‌صفحه
+   ============================================================ */
+
+/* ---------- دکمه همبرگری ---------- */
+.burger {
+  position: relative;
+  width: 40px; height: 40px;
+  display: none;                     /* در دسکتاپ پنهان */
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    border-color .35s cubic-bezier(.19,1,.22,1),
+    color .35s,
+    transform .45s cubic-bezier(.19,1,.22,1);
+  z-index: 60;
+}
+.burger:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.burger:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* خطوط همبرگر */
+.burger__bar {
+  position: absolute;
+  left: 50%;
+  width: 16px;
+  height: 1.5px;
+  background: currentColor;
+  border-radius: 2px;
+  transform: translateX(-50%);
+  transition:
+    transform .5s cubic-bezier(.19,1,.22,1),
+    opacity .3s,
+    top .5s cubic-bezier(.19,1,.22,1);
+}
+.burger__bar:nth-child(1) { top: 15px; }
+.burger__bar:nth-child(2) { top: 19px; }
+.burger__bar:nth-child(3) { top: 23px; }
+
+/* تبدیل به X وقتی باز است */
+.burger[aria-expanded="true"] .burger__bar:nth-child(1) {
+  top: 19px;
+  transform: translateX(-50%) rotate(45deg);
+}
+.burger[aria-expanded="true"] .burger__bar:nth-child(2) {
+  opacity: 0;
+  transform: translateX(-50%) scaleX(.3);
+}
+.burger[aria-expanded="true"] .burger__bar:nth-child(3) {
+  top: 19px;
+  transform: translateX(-50%) rotate(-45deg);
+}
+
+@media (max-width: 767px) {
+  .burger { display: inline-flex; }
+  /* ناوبری دسکتاپ در موبایل پنهان شود */
+  header.nav nav.hidden,
+  header.nav nav[class*="hidden"] { display: none !important; }
+  /* دکمه همکاری در هدر هم پنهان شود (در پنل هست) */
+  header.nav > div > a[href="#contact"]:not(.burger) { display: none; }
+}
+
+/* ---------- پنل منوی تمام‌صفحه ---------- */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  padding: 6rem clamp(1.25rem, 5vw, 2.5rem) 2rem;
+  pointer-events: none;
+  opacity: 0;
+  /* ماسک از بالا باز می‌شود */
+  clip-path: inset(0 0 100% 0);
+  transition:
+    opacity .35s cubic-bezier(.19,1,.22,1),
+    clip-path .7s cubic-bezier(.19,1,.22,1),
+    background-color .45s cubic-bezier(.19,1,.22,1);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.mobile-menu.open {
+  opacity: 1;
+  pointer-events: auto;
+  clip-path: inset(0 0 0 0);
+}
+
+/* بافت کاغذ داخل پنل */
+.mobile-menu::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .5;
+  mix-blend-mode: multiply;
+  background-image:
+    radial-gradient(circle at 20% 30%, var(--grain)   0 1px, transparent 1.2px),
+    radial-gradient(circle at 70% 60%, var(--grain-2) 0 1px, transparent 1.2px);
+  background-size: 5px 5px, 7px 7px;
+}
+
+/* ---------- فهرست لینک‌های منو ---------- */
+.mobile-menu__list {
+  list-style: none;
+  padding: 0; margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .2rem;
+  flex: 1;
+}
+.mobile-menu__item {
+  border-top: 1px solid var(--line);
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity .6s cubic-bezier(.19,1,.22,1),
+    transform .6s cubic-bezier(.19,1,.22,1);
+  transition-delay: var(--d, 0s);
+}
+.mobile-menu__item:last-child { border-bottom: 1px solid var(--line); }
+
+.mobile-menu.open .mobile-menu__item {
+  opacity: 1;
+  transform: none;
+}
+
+.mobile-menu__item a {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: clamp(1rem, 3vw, 1.4rem) 0;
+  color: var(--ink);
+  font-size: clamp(1.6rem, 7vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  transition: color .35s, padding-inline-start .45s cubic-bezier(.19,1,.22,1);
+}
+.mobile-menu__item a:hover,
+.mobile-menu__item a:focus-visible {
+  color: var(--accent);
+  padding-inline-start: .6rem;
+  outline: none;
+}
+
+/* شماره‌ی کوچک کنار هر لینک */
+.mobile-menu__item a span:last-child {
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color .35s;
+}
+.mobile-menu__item a:hover span:last-child { color: var(--accent); }
+
+/* ---------- اطلاعات پایین پنل ---------- */
+.mobile-menu__foot {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity .6s cubic-bezier(.19,1,.22,1),
+    transform .6s cubic-bezier(.19,1,.22,1);
+  transition-delay: .55s;
+}
+.mobile-menu.open .mobile-menu__foot {
+  opacity: 1;
+  transform: none;
+}
+
+.mobile-menu__mail {
+  position: relative;
+  color: var(--ink);
+  font-weight: 600;
+  transition: color .35s;
+}
+.mobile-menu__mail::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0; bottom: -3px;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform .45s cubic-bezier(.19,1,.22,1);
+}
+.mobile-menu__mail:hover { color: var(--accent); }
+.mobile-menu__mail:hover::after { transform: scaleX(1); }
+
+.mobile-menu__socials {
+  display: inline-flex;
+  gap: 1rem;
+  font-size: .85rem;
+  color: var(--muted);
+}
+.mobile-menu__socials a {
+  color: inherit;
+  transition: color .35s;
+}
+.mobile-menu__socials a:hover { color: var(--accent); }
+
+/* ---------- قفل اسکرول بدنه وقتی منو باز است ---------- */
+body.menu-open {
+  overflow: hidden;
+}
+
+/* ---------- کاهش حرکت ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu,
+  .mobile-menu__item,
+  .mobile-menu__foot,
+  .burger__bar {
+    transition: none !important;
+  }
+  .mobile-menu.open .mobile-menu__item,
+  .mobile-menu.open .mobile-menu__foot {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* ============================================================
+   ۲۱) ناحیه دکمه‌های هدر (تم، همکاری، همبرگر)
+   ============================================================ */
+.nav-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: .75rem;
+}
+
+/* دکمه تم دقیقاً مربعی و آیکن دقیقاً مرکزی */
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  flex-shrink: 0;
+  line-height: 0;
+}
+.theme-toggle svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* دکمه همبرگر همان اندازه و همان‌جا */
+.burger {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+/* دکمه «همکاری» در دسکتاپ */
+.nav-cta {
+  display: inline-flex;
+  align-items: center;
+  padding: .5rem 1rem;
+  font-size: .875rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  transition:
+    background-color .35s cubic-bezier(.19,1,.22,1),
+    color .35s,
+    border-color .35s;
+}
+.nav-cta:hover {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+/* دسکتاپ: همبرگر پنهان */
+@media (min-width: 768px) {
+  .burger { display: none; }
+}
+
+/* موبایل: همکاری پنهان، دکمه‌ها هم‌ردیف می‌مانند */
+@media (max-width: 767px) {
+  .nav-cta { display: none; }
+  .nav-actions { gap: .6rem; }
+}
+
+/* گوشی‌های خیلی کوچک: فقط همبرگر */
+@media (max-width: 360px) {
+  .theme-toggle { display: none; }
+}
