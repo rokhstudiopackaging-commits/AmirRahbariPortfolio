@@ -506,7 +506,7 @@ html[data-theme="dark"] .tile:hover img {
 /* ============================================================
    ۱۰) ابزارها
    ============================================================ */
-.tool {
+   .tool {
   display: flex;
   align-items: center;
   gap: .7rem;
@@ -514,16 +514,20 @@ html[data-theme="dark"] .tile:hover img {
   border: 1px solid var(--line);
   border-radius: 999px;
   background: var(--tool-bg);
+  color: var(--ink);
+  font-weight: 500;
   transition:
     transform .5s cubic-bezier(.19,1,.22,1),
     border-color .35s,
-    box-shadow .5s cubic-bezier(.19,1,.22,1);
+    box-shadow .5s cubic-bezier(.19,1,.22,1),
+    color .35s;
   cursor: default;
 }
 .tool:hover {
   transform: translateY(-5px);
   border-color: var(--c);
   box-shadow: 0 10px 22px -16px var(--c);
+  color: var(--accent);
 }
 .tool i {
   width: .75rem; height: .75rem;
@@ -532,6 +536,9 @@ html[data-theme="dark"] .tile:hover img {
   transition: transform .5s cubic-bezier(.19,1,.22,1);
 }
 .tool:hover i { transform: rotate(45deg) scale(1.15); }
+.tool {
+  color: var(--ink);
+}
 
 
 /* ============================================================
