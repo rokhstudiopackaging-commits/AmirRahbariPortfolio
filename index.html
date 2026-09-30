@@ -2905,6 +2905,319 @@ body.menu-open {
 @media (prefers-reduced-motion: reduce) {
   #lb, #lb-img, .lb__nav, .lb__close { transition: none; }
 }
+/* ============================================================
+   LIGHTBOX — نسخه ۲.۰
+   ============================================================ */
+
+#lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity .35s cubic-bezier(.19, 1, .22, 1);
+  pointer-events: none;
+}
+#lightbox[hidden] { display: none; }
+#lightbox.is-open { opacity: 1; pointer-events: auto; }
+
+/* --- پس‌زمینه تار --- */
+.lb-backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--lb-bg);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  cursor: zoom-out;
+}
+
+/* --- کانتینر اصلی --- */
+.lb-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas:
+    "header header header"
+    "prev   stage  next"
+    "thumbs thumbs thumbs";
+  padding: clamp(.75rem, 2vw, 1.25rem);
+  gap: clamp(.5rem, 1.5vw, 1rem);
+  transform: scale(.96);
+  transition: transform .45s cubic-bezier(.19, 1, .22, 1);
+}
+#lightbox.is-open .lb-container { transform: scale(1); }
+
+/* --- هدر --- */
+.lb-header {
+  grid-area: header;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.lb-counter {
+  font-size: .82rem;
+  font-weight: 700;
+  letter-spacing: .18em;
+  color: rgba(240, 239, 234, .68);
+  padding: .3rem .8rem;
+  border: 1px solid rgba(240, 239, 234, .14);
+  border-radius: 999px;
+}
+
+/* --- دکمه‌های ناوبری --- */
+.lb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid rgba(240, 239, 234, .18);
+  background: rgba(255, 255, 255, .05);
+  color: var(--paper);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background-color .3s cubic-bezier(.19, 1, .22, 1),
+    border-color .3s,
+    color .3s,
+    transform .4s cubic-bezier(.19, 1, .22, 1);
+}
+.lb-btn svg { width: 20px; height: 20px; }
+.lb-btn:hover {
+  background: rgba(255, 255, 255, .1);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: scale(1.06);
+}
+.lb-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.lb-btn--close:hover { transform: rotate(90deg) scale(1.06); }
+.lb-btn--prev { grid-area: prev; align-self: center; justify-self: end; }
+.lb-btn--next { grid-area: next; align-self: center; justify-self: start; }
+
+/* --- استیج (تصویر + کپشن) --- */
+.lb-figure {
+  grid-area: stage;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(.75rem, 1.5vw, 1.25rem);
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.lb-img-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  max-height: 100%;
+  min-height: 0;
+  flex: 1;
+}
+
+#lb-img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  border-radius: 18px;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  opacity: 0;
+  transform: scale(.96);
+  transition:
+    opacity .4s cubic-bezier(.19, 1, .22, 1),
+    transform .5s cubic-bezier(.19, 1, .22, 1);
+  box-shadow: 0 40px 90px -35px rgba(0, 0, 0, .75);
+}
+#lb-img.is-loaded { opacity: 1; transform: scale(1); }
+
+/* --- لودر --- */
+.lb-loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s;
+}
+#lb-img:not(.is-loaded) + .lb-loader { opacity: 1; }
+
+.lb-loader span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: lb-dot 1.4s ease-in-out infinite;
+}
+.lb-loader span:nth-child(2) { animation-delay: .18s; }
+.lb-loader span:nth-child(3) { animation-delay: .36s; }
+
+@keyframes lb-dot {
+  0%, 80%, 100% { transform: scale(.6); opacity: .35; }
+  40%           { transform: scale(1);  opacity: 1; }
+}
+
+/* --- کپشن --- */
+.lb-caption {
+  max-width: min(90vw, 640px);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+  flex-shrink: 0;
+}
+.lb-title {
+  font-size: clamp(1rem, 2.5vw, 1.15rem);
+  font-weight: 800;
+  letter-spacing: -.01em;
+  color: var(--paper);
+  margin: 0;
+}
+.lb-desc {
+  font-size: clamp(.82rem, 2vw, .92rem);
+  line-height: 1.85;
+  color: rgba(240, 239, 234, .72);
+  margin: 0;
+}
+.lb-meta {
+  list-style: none;
+  padding: 0;
+  margin: .3rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem .9rem;
+  justify-content: center;
+  font-size: .76rem;
+  color: rgba(240, 239, 234, .55);
+}
+.lb-meta li {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+}
+.lb-meta li::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
+  background: var(--accent);
+  transform: rotate(45deg);
+}
+
+/* --- نوار Thumbnail --- */
+.lb-thumbs {
+  grid-area: thumbs;
+  display: flex;
+  gap: .5rem;
+  justify-content: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: .35rem .25rem;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.lb-thumbs::-webkit-scrollbar { display: none; }
+
+.lb-thumbs button {
+  flex-shrink: 0;
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  opacity: .42;
+  filter: grayscale(.35);
+  transition:
+    opacity .3s,
+    filter .3s,
+    border-color .3s,
+    transform .4s cubic-bezier(.19, 1, .22, 1);
+}
+.lb-thumbs button img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.lb-thumbs button:hover {
+  opacity: .85;
+  filter: grayscale(0);
+  transform: translateY(-3px);
+}
+.lb-thumbs button.is-active {
+  opacity: 1;
+  filter: grayscale(0);
+  border-color: var(--accent);
+  transform: translateY(-3px);
+}
+
+/* --- جلوگیری از اسکرول بدنه --- */
+body.lb-open { overflow: hidden; }
+
+/* --- موبایل --- */
+@media (max-width: 720px) {
+  .lb-container {
+    grid-template-areas:
+      "header header"
+      "stage  stage"
+      "thumbs thumbs";
+    grid-template-columns: 1fr auto;
+    padding: .6rem;
+  }
+  .lb-btn--prev,
+  .lb-btn--next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    width: 38px;
+    height: 38px;
+    background: rgba(0, 0, 0, .55);
+    backdrop-filter: blur(8px);
+  }
+  .lb-btn--prev { inset-inline-end: .5rem; }
+  .lb-btn--next { inset-inline-start: .5rem; }
+  .lb-btn--prev:hover,
+  .lb-btn--next:hover { transform: translateY(-50%) scale(1.08); }
+
+  .lb-caption { max-width: 100%; }
+  .lb-thumbs button { width: 46px; height: 46px; }
+}
+
+/* --- کاهش حرکت --- */
+@media (prefers-reduced-motion: reduce) {
+  #lightbox,
+  .lb-container,
+  #lb-img,
+  .lb-btn,
+  .lb-thumbs button {
+    transition: none !important;
+  }
+  .lb-loader span { animation: none; }
+}
 </style>
 </head>
 <body class="antialiased">
@@ -3734,66 +4047,60 @@ body.menu-open {
 
   </div>
 </footer>
-<div id="lb" role="dialog" aria-modal="true" aria-label="نمایش نمونه‌کار" hidden>
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="نمایش نمونه‌کار" hidden>
+  <!-- لایه پس‌زمینه -->
+  <div class="lb-backdrop" data-lb-close></div>
 
-  <!-- دکمه بستن -->
-  <button id="lb-close" class="lb__close" type="button" aria-label="بستن">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-         stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
-      <path d="m6 6 12 12M18 6 6 18"/>
-    </svg>
-  </button>
+  <!-- کانتینر اصلی -->
+  <div class="lb-container">
 
-  <!-- شمارنده -->
-  <span id="lb-counter" class="lb__counter en" aria-hidden="true"></span>
+    <!-- هدر: شمارنده + دکمه بستن -->
+    <div class="lb-header">
+      <span id="lb-counter" class="lb-counter en" aria-live="polite"></span>
+      <button id="lb-close" class="lb-btn lb-btn--close" type="button" aria-label="بستن (Escape)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+          <path d="m6 6 12 12M18 6 6 18"/>
+        </svg>
+      </button>
+    </div>
 
-  <!-- دکمه قبلی (در RTL: فلش راست) -->
-  <button id="lb-prev" class="lb__nav lb__nav--prev" type="button" aria-label="نمونه‌کار قبلی">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-         stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="m9 6 6 6-6 6"/>
-    </svg>
-  </button>
+    <!-- دکمه قبلی -->
+    <button id="lb-prev" class="lb-btn lb-btn--prev" type="button" aria-label="نمونه‌کار قبلی (فلش راست)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m9 6 6 6-6 6"/>
+      </svg>
+    </button>
 
-  <!-- دکمه بعدی (در RTL: فلش چپ) -->
-  <button id="lb-next" class="lb__nav lb__nav--next" type="button" aria-label="نمونه‌کار بعدی">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-         stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="m15 6-6 6 6 6"/>
-    </svg>
-  </button>
+    <!-- استیج تصویر -->
+    <figure class="lb-figure">
+      <div class="lb-img-wrap">
+        <img id="lb-img" alt="" draggable="false">
+        <div id="lb-loader" class="lb-loader" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
 
-  <!-- بدنه‌ی لایت‌باکس -->
-  <div class="lb__stage">
-    <figure class="lb__figure">
-      <img id="lb-img" alt="">
-
-      <!-- ▼▼▼ اینجا اطلاعات نمونه‌کار ▼▼▼ -->
-      <!--
-        برای هر نمونه‌کار، می‌توانی این اطلاعات را در data-attribute های
-        همان تصویر در HTML قرار دهی. مثال:
-
-        <img src="..."
-             data-title="پوستر نوشیدنی"
-             data-tools="Illustrator"
-             data-year="1404"
-             data-desc="پوستر تبلیغاتی برای یک برند نوشیدنی، با تمرکز روی رنگ و ترکیب‌بندی ساده.">
-
-        لایت‌باکس این‌ها را خودکار می‌خواند و نشان می‌دهد.
-        اگر خواستی متن‌های ثابت داشته باشی، می‌توانی داخل همین تگ‌های
-        #lb-title و #lb-desc و #lb-meta مستقیم بنویسی.
-      -->
-      <figcaption class="lb__caption">
-        <h3 id="lb-title" class="lb__title"></h3>
-        <p id="lb-desc" class="lb__desc"></p>
-        <ul id="lb-meta" class="lb__meta"></ul>
+      <figcaption class="lb-caption">
+        <h3 id="lb-title" class="lb-title"></h3>
+        <p id="lb-desc" class="lb-desc"></p>
+        <ul id="lb-meta" class="lb-meta"></ul>
       </figcaption>
     </figure>
+
+    <!-- دکمه بعدی -->
+    <button id="lb-next" class="lb-btn lb-btn--next" type="button" aria-label="نمونه‌کار بعدی (فلش چپ)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m15 6-6 6 6 6"/>
+      </svg>
+    </button>
+
+    <!-- نوار Thumbnail -->
+    <div id="lb-thumbs" class="lb-thumbs" role="tablist" aria-label="انتخاب نمونه‌کار"></div>
+
   </div>
-
-  <!-- نوار بندانگشتی‌ها (اختیاری — اگر خواستی حذف کن) -->
-  <div id="lb-thumbs" class="lb__thumbs" role="tablist" aria-label="انتخاب نمونه‌کار"></div>
-
 </div>
 <script>
 const nav=document.getElementById('nav');
@@ -3944,42 +4251,6 @@ addEventListener('keydown',e=>{if(e.key==='Escape')close()});
     requestParallax();
   }
 
-  /* ---------------------------------------------------------
-     ۶) نورافکن (Lightbox)
-     --------------------------------------------------------- */
-  const lb = document.getElementById('lb');
-  const lbi = lb.querySelector('img');
-  let lastFocus = null;
-
-  const openLb = (src, alt) => {
-    lastFocus = document.activeElement;
-    lbi.src = src;
-    lbi.alt = alt;
-    lb.classList.add('on');
-    document.body.style.overflow = 'hidden';
-  };
-  const closeLb = () => {
-    lb.classList.remove('on');
-    document.body.style.overflow = '';
-    if (lastFocus) lastFocus.focus();
-  };
-
-  document.querySelectorAll('.tile img').forEach(img => {
-    const tile = img.parentElement;
-    if (tile.classList.contains('!cursor-default')) return;
-    tile.setAttribute('role', 'button');
-    tile.setAttribute('tabindex', '0');
-    tile.addEventListener('click', () => openLb(img.src, img.alt));
-    tile.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        openLb(img.src, img.alt);
-      }
-    });
-  });
-
-  lb.addEventListener('click', closeLb);
-  addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('on')) closeLb(); });
 
   /* ---------------------------------------------------------
      ۷) بوم ذرات — بافت بسیار ظریف، فقط در پس‌زمینه
@@ -4182,7 +4453,284 @@ if (burger && mobileMenu) {
   };
   addEventListener('keydown', trapFocus);
 }
+/* ============================================================
+   LIGHTBOX 2.0 — مستقل، روان، بدون باگ
+   ============================================================ */
+(() => {
+  'use strict';
+
+  const lb        = document.getElementById('lightbox');
+  const img       = document.getElementById('lb-img');
+  const loader    = document.getElementById('lb-loader');
+  const counter   = document.getElementById('lb-counter');
+  const titleEl   = document.getElementById('lb-title');
+  const descEl    = document.getElementById('lb-desc');
+  const metaEl    = document.getElementById('lb-meta');
+  const thumbsEl  = document.getElementById('lb-thumbs');
+  const btnClose  = document.getElementById('lb-close');
+  const btnPrev   = document.getElementById('lb-prev');
+  const btnNext   = document.getElementById('lb-next');
+
+  if (!lb || !img) return;
+
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- جمع‌آوری نمونه‌کارها ---------- */
+  // هر تایل که cursor: zoom-in دارد را برمی‌داریم
+  const sourceImages = [...document.querySelectorAll('.tile img')]
+    .filter(im => !im.closest('.\\!cursor-default') &&
+                  getComputedStyle(im.parentElement).cursor !== 'default');
+
+  if (!sourceImages.length) return;
+
+  const items = sourceImages.map(im => ({
+    src:    im.src,
+    alt:    im.alt || '',
+    title:  im.dataset.title  || '',
+    desc:   im.dataset.desc   || '',
+    tools:  im.dataset.tools  || '',
+    year:   im.dataset.year   || '',
+    thumb:  im.dataset.thumb  || im.src,
+  }));
+
+  let currentIndex = 0;
+  let lastFocus    = null;
+  let isOpen       = false;
+
+  /* ---------- ساخت Thumbnail bar ---------- */
+  items.forEach((item, i) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.setAttribute('role', 'tab');
+    btn.setAttribute('aria-label', `نمونه‌کار ${i + 1}`);
+    btn.dataset.index = i;
+    const t = document.createElement('img');
+    t.src = item.thumb;
+    t.alt = '';
+    t.loading = 'lazy';
+    btn.appendChild(t);
+    btn.addEventListener('click', () => goTo(i));
+    thumbsEl.appendChild(btn);
+  });
+  const thumbButtons = [...thumbsEl.querySelectorAll('button')];
+
+  /* ---------- نمایش یک نمونه‌کار ---------- */
+  const render = (i, direction = 0) => {
+    const item = items[i];
+    currentIndex = i;
+
+    // ریست انیمیشن
+    img.classList.remove('is-loaded');
+    img.style.transition = 'none';
+
+    // اگر تصویر از قبل کش شده، فوراً نشان بده
+    const tempImg = new Image();
+    tempImg.onload = () => {
+      img.src = item.src;
+      img.alt = item.alt;
+      // انیمیشن جهت‌دار
+      if (!reduceMotion && direction !== 0) {
+        img.style.transform = `translateX(${direction * 30}px) scale(.96)`;
+      }
+      requestAnimationFrame(() => {
+        img.style.transition = '';
+        img.classList.add('is-loaded');
+        img.style.transform = '';
+      });
+    };
+    tempImg.onerror = () => {
+      img.src = item.src;
+      img.alt = item.alt;
+      img.classList.add('is-loaded');
+    };
+    tempImg.src = item.src;
+
+    // متن‌ها
+    titleEl.textContent = item.title;
+    descEl.textContent  = item.desc;
+    titleEl.style.display = item.title ? '' : 'none';
+    descEl.style.display  = item.desc  ? '' : 'none';
+
+    // متادیتا
+    metaEl.innerHTML = '';
+    [item.tools, item.year].filter(Boolean).forEach(v => {
+      const li = document.createElement('li');
+      li.textContent = v;
+      metaEl.appendChild(li);
+    });
+    metaEl.style.display = metaEl.children.length ? '' : 'none';
+
+    // شمارنده
+    counter.textContent = `${i + 1} / ${items.length}`;
+
+    // Thumbnail فعال
+    thumbButtons.forEach((b, idx) => b.classList.toggle('is-active', idx === i));
+    const activeThumb = thumbButtons[i];
+    if (activeThumb && thumbsEl.scrollWidth > thumbsEl.clientWidth) {
+      activeThumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+
+    // Preload قبلی و بعدی
+    preload((i + 1) % items.length);
+    preload((i - 1 + items.length) % items.length);
+  };
+
+  const preload = (i) => {
+    const p = new Image();
+    p.src = items[i].src;
+  };
+
+  const goTo = (i, direction = 0) => {
+    if (i === currentIndex && isOpen) return;
+    render((i + items.length) % items.length, direction);
+  };
+  const next = () => goTo(currentIndex + 1, 1);
+  const prev = () => goTo(currentIndex - 1, -1);
+
+  /* ---------- باز و بسته کردن ---------- */
+  const open = (i) => {
+    lastFocus = document.activeElement;
+    isOpen = true;
+    lb.hidden = false;
+    // نیاز به یک فریم تأخیر برای اجرای transition
+    requestAnimationFrame(() => {
+      lb.classList.add('is-open');
+      document.body.classList.add('lb-open');
+    });
+    render(i);
+    setTimeout(() => btnClose.focus({ preventScroll: true }), 350);
+  };
+
+  const close = () => {
+    if (!isOpen) return;
+    isOpen = false;
+    lb.classList.remove('is-open');
+    document.body.classList.remove('lb-open');
+    setTimeout(() => {
+      lb.hidden = true;
+      img.src = '';
+    }, 350);
+    if (lastFocus) lastFocus.focus({ preventScroll: true });
+  };
+
+  /* ---------- اتصال به تایل‌ها ---------- */
+  sourceImages.forEach((im, i) => {
+    const tile = im.parentElement;
+    tile.setAttribute('role', 'button');
+    tile.setAttribute('tabindex', '0');
+    tile.setAttribute('aria-label', im.alt ? `باز کردن ${im.alt}` : 'باز کردن نمونه‌کار');
+
+    tile.addEventListener('click', () => open(i));
+    tile.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        open(i);
+      }
+    });
+  });
+
+  /* ---------- دکمه‌ها ---------- */
+  btnClose.addEventListener('click', close);
+  btnPrev.addEventListener('click', (e) => { e.stopPropagation(); prev(); });
+  btnNext.addEventListener('click', (e) => { e.stopPropagation(); next(); });
+
+  // کلیک روی پس‌زمینه = بستن
+  lb.addEventListener('click', (e) => {
+    if (e.target.closest('[data-lb-close]')) close();
+  });
+
+  /* ---------- کیبورد ---------- */
+  addEventListener('keydown', (e) => {
+    if (!isOpen) return;
+
+    switch (e.key) {
+      case 'Escape':
+        e.preventDefault();
+        close();
+        break;
+      case 'ArrowLeft':      // در RTL: چپ = بعدی
+        e.preventDefault();
+        next();
+        break;
+      case 'ArrowRight':     // در RTL: راست = قبلی
+        e.preventDefault();
+        prev();
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        prev();
+        break;
+      case 'ArrowDown':
+        e.preventDefault();
+        next();
+        break;
+      case 'Home':
+        e.preventDefault();
+        goTo(0, -1);
+        break;
+      case 'End':
+        e.preventDefault();
+        goTo(items.length - 1, 1);
+        break;
+      case 'Tab':
+        trapFocus(e);
+        break;
+    }
+  });
+
+  /* ---------- Focus Trap ---------- */
+  const trapFocus = (e) => {
+    const focusables = [
+      btnClose, btnPrev, btnNext,
+      ...thumbButtons,
+    ].filter(el => el && !el.disabled && el.offsetParent !== null);
+    if (!focusables.length) return;
+
+    const first = focusables[0];
+    const last  = focusables[focusables.length - 1];
+
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  };
+
+  /* ---------- Swipe در موبایل ---------- */
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchMoved = false;
+
+  lb.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    touchMoved = false;
+  }, { passive: true });
+
+  lb.addEventListener('touchmove', (e) => {
+    if (e.touches.length !== 1) return;
+    const dx = e.touches[0].clientX - touchStartX;
+    const dy = e.touches[0].clientY - touchStartY;
+    if (Math.abs(dx) > 10 || Math.abs(dy) > 10) touchMoved = true;
+  }, { passive: true });
+
+  lb.addEventListener('touchend', (e) => {
+    if (!touchMoved) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    // فقط اگر افقی بود
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy)) return;
+    // در RTL: کشیدن به راست = بعدی
+    if (dx > 0) next();
+    else prev();
+  }, { passive: true });
+
+})();
 
 </script>
+
 </body>
 </html>
