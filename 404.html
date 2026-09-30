@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>صفحه پیدا نشد | امیر رهبری</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="این صفحه پیدا نشد. بازگشت به پورتفولیوی امیر رهبری، طراح گرافیک.">
+
+<!-- فونت -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700;800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   صفحه ۴۰۴ — کاملاً مستقل، بدون وابستگی به فایل خارجی
+   ============================================================ */
+
+/* ---------- متغیرها ---------- */
+:root {
+  --paper: #F0EFEA;
+  --ink:   #141413;
+  --accent:#DA644B;
+  --line:  rgba(20,20,19,.14);
+  --muted: rgba(20,20,19,.62);
+  --nav-bg: rgba(240,239,234,.78);
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  --paper: #141413;
+  --ink:   #F0EFEA;
+  --accent:#DA644B;
+  --line:  rgba(240,239,234,.16);
+  --muted: rgba(240,239,234,.66);
+  --nav-bg: rgba(20,20,19,.72);
+  color-scheme: dark;
+}
+
+/* ---------- پایه ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Vazirmatn', system-ui, -apple-system, 'Segoe UI',
+               Tahoma, 'Iranian Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  transition:
+    background-color .45s cubic-bezier(.19,1,.22,1),
+    color .45s cubic-bezier(.19,1,.22,1);
+}
+
+/* بافت کاغذ بسیار ظریف */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: .5;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(20,20,19,.018) 0 1px, transparent 1.2px),
+    radial-gradient(circle at 70% 60%, rgba(20,20,19,.014) 0 1px, transparent 1.2px);
+  background-size: 5px 5px, 7px 7px;
+}
+html[data-theme="dark"] body::before {
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(240,239,234,.02) 0 1px, transparent 1.2px),
+    radial-gradient(circle at 70% 60%, rgba(240,239,234,.014) 0 1px, transparent 1.2px);
+}
+
+a { color: inherit; text-decoration: none; }
+
+::selection { background: var(--accent); color: #fff; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+.en {
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* ---------- هدر ---------- */
+.err-nav {
+  position: relative;
+  z-index: 2;
+  border-bottom: 1px solid var(--line);
+  background: var(--nav-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.err-nav__inner {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 2rem);
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.err-nav__brand {
+  font-size: 1.125rem;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1;
+  white-space: nowrap;
+}
+.err-nav__brand span { color: var(--accent); }
+
+.err-nav__cta {
+  display: inline-flex;
+  align-items: center;
+  padding: .5rem 1.1rem;
+  font-size: .875rem;
+  font-weight: 500;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  white-space: nowrap;
+  transition:
+    background-color .35s cubic-bezier(.19,1,.22,1),
+    color .35s,
+    border-color .35s;
+}
+.err-nav__cta:hover {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+/* ---------- بدنه ---------- */
+.err {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(3rem, 8vw, 6rem) clamp(1.25rem, 4vw, 2rem);
+}
+.err__inner {
+  max-width: 42rem;
+  width: 100%;
+  text-align: center;
+}
+
+/* ---------- ۴۰۴ غول‌پیکر ---------- */
+.err__num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(.6rem, 3vw, 1.8rem);
+  font-size: clamp(6rem, 26vw, 16rem);
+  font-weight: 800;
+  letter-spacing: -.06em;
+  line-height: .8;
+  margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  user-select: none;
+  pointer-events: none;
+}
+.err__num > span:not(.err__dot) {
+  color: transparent;
+  -webkit-text-stroke: 1.4px var(--line);
+  transition: -webkit-text-stroke .6s cubic-bezier(.19,1,.22,1);
+}
+.err:hover .err__num > span:not(.err__dot) {
+  -webkit-text-stroke: 1.4px var(--accent);
+}
+
+/* نقطه‌ی نارنجی چرخیده به‌جای صفر */
+.err__dot {
+  display: inline-block;
+  width: clamp(2rem, 8vw, 5rem);
+  height: clamp(2rem, 8vw, 5rem);
+  border-radius: 8px;
+  background: var(--accent);
+  transform: rotate(45deg);
+  animation: err-pulse 3.2s cubic-bezier(.19,1,.22,1) infinite;
+}
+@keyframes err-pulse {
+  0%, 100% { transform: rotate(45deg)  scale(1);    opacity: 1;   }
+  50%      { transform: rotate(135deg) scale(.88); opacity: .72; }
+}
+
+/* ---------- متن‌ها ---------- */
+.err__title {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.3;
+  margin: 0 0 1.2rem;
+}
+.err__desc {
+  font-size: 1rem;
+  line-height: 2;
+  color: var(--muted);
+  max-width: 32rem;
+  margin: 0 auto 2.5rem;
+}
+
+/* ---------- دکمه‌ها ---------- */
+.err__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: clamp(2.5rem, 6vw, 4rem);
+}
+
+.err-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .95rem 1.7rem;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  overflow: hidden;
+  transition: transform .45s cubic-bezier(.19,1,.22,1);
+  z-index: 0;
+}
+.err-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: translateY(101%);
+  transition: transform .5s cubic-bezier(.19,1,.22,1);
+  z-index: -1;
+}
+.err-btn:hover { transform: translateY(-3px); }
+.err-btn:hover::before { transform: translateY(0); }
+
+.err-link {
+  position: relative;
+  padding: .75rem .25rem;
+  transition: color .35s;
+}
+.err-link::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(1);
+  transform-origin: right;
+  transition: transform .45s cubic-bezier(.19,1,.22,1);
+}
+.err-link:hover { color: var(--accent); }
+.err-link:hover::after {
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+/* ---------- لینک‌های پیشنهادی ---------- */
+.err__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.25rem 2.25rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--line);
+  font-size: .9rem;
+}
+.err__links a {
+  position: relative;
+  color: var(--muted);
+  transition: color .35s;
+}
+.err__links a::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -3px;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform .45s cubic-bezier(.19,1,.22,1);
+}
+.err__links a:hover { color: var(--accent); }
+.err__links a:hover::after { transform: scaleX(1); }
+
+/* ---------- فوتر ---------- */
+.err-foot {
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid var(--line);
+}
+.err-foot__inner {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.4rem clamp(1.25rem, 4vw, 2rem);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: .75rem 1rem;
+  font-size: .82rem;
+  color: var(--muted);
+}
+.err-foot__link {
+  position: relative;
+  color: var(--muted);
+  transition: color .35s;
+}
+.err-foot__link::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -2px;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform .45s cubic-bezier(.19,1,.22,1);
+}
+.err-foot__link:hover { color: var(--accent); }
+.err-foot__link:hover::after { transform: scaleX(1); }
+
+/* ---------- کاهش حرکت ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+</style>
+
+<script>
+  (function () {
+    try {
+      var saved = localStorage.getItem('theme');
+      var prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+
+<header class="err-nav">
+  <div class="err-nav__inner">
+    <a href="https://rokhstudiopackaging-commits.github.io/AmirRahbariPortfolio/" class="err-nav__brand en">
+      Amir Rahbari<span>.</span>
+    </a>
+    <a href="https://rokhstudiopackaging-commits.github.io/AmirRahbariPortfolio/" class="err-nav__cta">بازگشت به خانه</a>
+  </div>
+</header>
+
+<main class="err">
+  <div class="err__inner">
+
+    <div class="err__num en" aria-hidden="true">
+      <span>4</span>
+      <span class="err__dot"></span>
+      <span>4</span>
+    </div>
+
+    <h1 class="err__title">این صفحه پیدا نشد.</h1>
+
+    <p class="err__desc">
+      شاید آدرس اشتباه بوده، یا صفحه‌ای که دنبالش بودی حذف شده.
+      از اینجا برگرد به خانه یا یکی از بخش‌های زیر را ببین.
+    </p>
+
+    <div class="err__actions">
+      <a href="https://rokhstudiopackaging-commits.github.io/AmirRahbariPortfolio/" class="err-btn">بازگشت به خانه</a>
+      <a href="https://rokhstudiopackaging-commits.github.io/AmirRahbariPortfolio/#works" class="err-link">نمونه‌کارها</a>
+    </div>
+
+    <nav class="err__links" aria-label="پیشنهاد صفحات">
+      <a href="https://rokhstudiopackaging-commits.github.io/AmirRahbariPortfolio/#about">درباره</a>
+      <a href="https://rokhstudiopackaging-commits.github.io/AmirRahbariPortfolio/#services">خدمات</a>
+      <a href="https://rokhstudiopackaging-commits.github.io/AmirRahbariPortfolio/#journey">مسیر</a>
+      <a href="https://rokhstudiopackaging-commits.github.io/AmirRahbariPortfolio/#contact">تماس</a>
+    </nav>
+
+  </div>
+</main>
+
+<footer class="err-foot">
+  <div class="err-foot__inner">
+    <span class="en">&copy; 2026 &mdash; Amir Rahbari</span>
+    <a href="https://rokhstudiopackaging-commits.github.io/AmirRahbariPortfolio/" class="err-foot__link">صفحه‌ی اصلی</a>
+  </div>
+</footer>
+
+</body>
+</html>
