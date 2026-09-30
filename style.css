@@ -1175,3 +1175,374 @@ body.menu-open {
 @media (max-width: 360px) {
   .theme-toggle { display: none; }
 }
+/* ============================================================
+   ۲۸) صفحه‌ی ۴۰۴
+   ============================================================ */
+.err {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8rem 1.5rem 4rem;
+  position: relative;
+}
+.err__inner {
+  max-width: 42rem;
+  width: 100%;
+  text-align: center;
+  position: relative;
+}
+
+/* شماره‌ی غول‌پیکر ۴۰۴ با outline — همان زبان امضای فوتر */
+.err__num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(.5rem, 3vw, 1.8rem);
+  font-size: clamp(6rem, 26vw, 16rem);
+  font-weight: 800;
+  letter-spacing: -.06em;
+  line-height: .8;
+  margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+  user-select: none;
+  pointer-events: none;
+}
+.err__num span:not(.err__dot) {
+  color: transparent;
+  -webkit-text-stroke: 1.4px var(--line);
+  transition: -webkit-text-stroke .6s cubic-bezier(.19,1,.22,1);
+}
+.err:hover .err__num span:not(.err__dot) {
+  -webkit-text-stroke: 1.4px var(--accent);
+}
+
+/* نقطه‌ی نارنجی چرخیده به‌جای صفر */
+.err__dot {
+  display: inline-block;
+  width: clamp(2rem, 8vw, 5rem);
+  height: clamp(2rem, 8vw, 5rem);
+  border-radius: 8px;
+  background: var(--accent);
+  transform: rotate(45deg);
+  animation: err-pulse 3.2s cubic-bezier(.19,1,.22,1) infinite;
+}
+@keyframes err-pulse {
+  0%, 100% { transform: rotate(45deg) scale(1);    opacity: 1; }
+  50%      { transform: rotate(135deg) scale(.88); opacity: .72; }
+}
+
+.err__title {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  margin-bottom: 1.2rem;
+}
+
+.err__desc {
+  font-size: 1rem;
+  line-height: 2;
+  color: var(--muted);
+  max-width: 32rem;
+  margin: 0 auto 2.5rem;
+}
+
+.err__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: clamp(2.5rem, 6vw, 4rem);
+}
+
+.err__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--line);
+  font-size: .9rem;
+}
+.err__links a {
+  position: relative;
+  color: var(--muted);
+  transition: color .35s;
+}
+.err__links a::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -3px;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform .45s cubic-bezier(.19,1,.22,1);
+}
+.err__links a:hover { color: var(--accent); }
+.err__links a:hover::after { transform: scaleX(1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .err__dot { animation: none; }
+}
+/* ============================================================
+   ۲۹) لایت‌باکس اختصاصی نمونه‌کارها
+   ============================================================ */
+#lb {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: var(--lb-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: grid;
+  grid-template-rows: 1fr auto;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .4s cubic-bezier(.19,1,.22,1);
+  padding: 4rem 1rem 1rem;
+}
+#lb.on { opacity: 1; pointer-events: auto; }
+#lb[hidden] { display: none; }
+
+/* ---------- استیج ---------- */
+.lb__stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.lb__figure {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  max-width: min(100%, 1200px);
+  max-height: 100%;
+  align-items: center;
+}
+
+#lb-img {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100vh - 14rem);
+  width: auto;
+  height: auto;
+  border-radius: 20px;
+  object-fit: contain;
+  transform: scale(.96);
+  transition: transform .55s cubic-bezier(.19,1,.22,1);
+  box-shadow: 0 40px 80px -40px rgba(0,0,0,.6);
+}
+#lb.on #lb-img { transform: scale(1); }
+
+/* ---------- کپشن ---------- */
+.lb__caption {
+  max-width: 42rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+.lb__title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -.01em;
+  color: var(--paper);
+}
+.lb__desc {
+  font-size: .9rem;
+  line-height: 1.9;
+  color: rgba(240,239,234,.72);
+}
+.lb__meta {
+  list-style: none;
+  padding: 0;
+  margin: .4rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem 1rem;
+  justify-content: center;
+  font-size: .78rem;
+  color: rgba(240,239,234,.55);
+}
+.lb__meta li {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+}
+.lb__meta li::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
+  background: var(--accent);
+  transform: rotate(45deg);
+}
+
+/* ---------- دکمه‌های ناوبری ---------- */
+.lb__nav,
+.lb__close {
+  position: absolute;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(240,239,234,.22);
+  border-radius: 999px;
+  background: rgba(255,255,255,.04);
+  color: var(--paper);
+  cursor: pointer;
+  transition:
+    border-color .35s,
+    color .35s,
+    transform .45s cubic-bezier(.19,1,.22,1),
+    background-color .35s;
+}
+.lb__nav svg,
+.lb__close svg { width: 1.1rem; height: 1.1rem; }
+
+.lb__nav:hover,
+.lb__close:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(255,255,255,.08);
+}
+.lb__close { top: 1rem; inset-inline-end: 1rem; }
+.lb__close:hover { transform: rotate(90deg); }
+.lb__nav--prev { inset-inline-end: 1rem; top: 50%; transform: translateY(-50%); }
+.lb__nav--next { inset-inline-start: 1rem; top: 50%; transform: translateY(-50%); }
+.lb__nav--prev:hover { transform: translateY(-50%) translateX(-4px); }
+.lb__nav--next:hover { transform: translateY(-50%) translateX( 4px); }
+
+.lb__counter {
+  position: absolute;
+  top: 1.4rem;
+  inset-inline-start: 1.4rem;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .2em;
+  color: rgba(240,239,234,.6);
+}
+
+/* ---------- بندانگشتی‌ها ---------- */
+.lb__thumbs {
+  display: flex;
+  gap: .6rem;
+  justify-content: center;
+  padding: 1rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.lb__thumbs::-webkit-scrollbar { display: none; }
+
+.lb__thumbs button {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  opacity: .45;
+  transition: opacity .35s, border-color .35s, transform .45s cubic-bezier(.19,1,.22,1);
+}
+.lb__thumbs button img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.lb__thumbs button:hover { opacity: .8; transform: translateY(-3px); }
+.lb__thumbs button.is-active {
+  opacity: 1;
+  border-color: var(--accent);
+}
+
+@media (max-width: 720px) {
+  #lb { padding-top: 3.5rem; }
+  .lb__nav--prev,
+  .lb__nav--next { top: auto; bottom: 5rem; transform: none; }
+  .lb__nav--prev { inset-inline-end: calc(50% + 1rem); }
+  .lb__nav--next { inset-inline-start: calc(50% + 1rem); }
+  .lb__nav--prev:hover,
+  .lb__nav--next:hover { transform: translateY(-3px); }
+  #lb-img { max-height: calc(100vh - 18rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #lb, #lb-img, .lb__nav, .lb__close { transition: none; }
+}
+/* ============================================================
+   ۳۰) انیمیشن هیرو
+   ============================================================ */
+
+/* بج بالای عنوان — با ورود ظریف کشیده می‌شود */
+.hero-eyebrow {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: hero-eyebrow .8s cubic-bezier(.19,1,.22,1) forwards;
+  animation-delay: .1s;
+}
+@keyframes hero-eyebrow {
+  to { opacity: 1; transform: none; }
+}
+.hero-dot {
+  animation: hero-dot 3s cubic-bezier(.19,1,.22,1) infinite;
+}
+@keyframes hero-dot {
+  0%, 100% { transform: rotate(45deg)  scale(1);    }
+  50%      { transform: rotate(135deg) scale(1.15); }
+}
+
+/* خط سوم عنوان (هستم.) — یک تأکید ملایم در پایان */
+.hero-highlight > span {
+  position: relative;
+  display: inline-block;
+}
+.hero-highlight > span::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: .08em;
+  height: .12em;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: right;
+  animation: hero-underline 1s cubic-bezier(.19,1,.22,1) .95s forwards;
+}
+@keyframes hero-underline {
+  to { transform: scaleX(1); }
+}
+
+/* پرتره — ورود نرم با تأخیر و کمی چرخش */
+.hero-portrait .tile {
+  opacity: 0;
+  transform: translateY(24px) rotate(-1.2deg);
+  animation: hero-portrait 1.2s cubic-bezier(.19,1,.22,1) .7s forwards;
+}
+@keyframes hero-portrait {
+  to { opacity: 1; transform: none; }
+}
+
+/* پاراگراف توضیحی — با یک خط چین کنارش عمق می‌گیرد */
+.hero-title + p {
+  position: relative;
+  padding-inline-start: 1rem;
+}
+.hero-title + p::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: .6rem;
+  bottom: .6rem;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--accent), transparent 80%);
+  border-radius: 2px;
+  opacity: .7;
+}
